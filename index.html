@@ -4,235 +4,269 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LukStore Bazar</title>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
 <style>
-/* ====== Estilos Gerais ====== */
-body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;margin:0;padding:0;overflow-x:hidden;}
-.hidden{display:none;}
-.copy-btn{padding:5px 10px;margin-left:10px;font-size:12px;cursor:pointer;background:#6d28d9;color:#fff;border:none;border-radius:8px;transition:.3s;}
-.copy-btn:hover{background:#a855f7;}
-/* ====== Tela Inicial ====== */
-#telaInicial{display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background:linear-gradient(135deg,#6d28d9,#a855f7);background-size:400% 400%;animation:gradientBG 15s ease infinite;color:#fff;text-align:center;}
-@keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-#telaInicial h1{font-size:2.6rem;margin-bottom:20px;animation:fadeIn 1s ease forwards;opacity:0;}
-#telaInicial p{font-size:1.3rem;margin-bottom:30px;animation:fadeIn 1.2s ease forwards;opacity:0;}
-#telaInicial button{padding:18px 36px;margin:10px;font-size:18px;border:none;border-radius:14px;cursor:pointer;background:#fff;color:#6d28d9;font-weight:bold;transition:.3s;opacity:0;transform:translateY(20px);animation:fadeInUp 1s ease forwards;box-shadow:0 6px 12px rgba(0,0,0,.2);}
-#telaInicial button:hover{transform:scale(1.1);box-shadow:0 8px 20px rgba(0,0,0,.3);}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-/* ====== Cards Produtos ====== */
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;margin:20px;}
-.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,.15);transition:.5s;cursor:pointer;opacity:0;transform:translateY(20px);animation:cardFadeIn 0.6s forwards;display:flex;flex-direction:column;}
-.card:hover{transform:translateY(-5px) scale(1.03);box-shadow:0 12px 24px rgba(0,0,0,.2);}
-.card img{width:100%;height:240px;object-fit:cover;}
-.card .info{padding:16px;display:flex;flex-direction:column;align-items:flex-start;}
-.card h4{font-size:18px;margin-bottom:6px;color:#333;}
-.card .preco{font-weight:bold;color:#16a34a;margin-bottom:6px;}
-.card button{width:100%;padding:12px;border:none;border-radius:12px;background:#6d28d9;color:#fff;font-weight:bold;cursor:pointer;transition:.3s;margin-top:6px;}
-.card button:hover{background:#a855f7;}
-@keyframes cardFadeIn{to{opacity:1;transform:translateY(0)}}
-/* ====== Modal ====== */
-.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;justify-content:center;align-items:center;visibility:hidden;opacity:0;transition:.3s;z-index:1000;}
-.modal-content{background:#fff;padding:25px;border-radius:16px;max-width:450px;width:90%;position:relative;transform:scale(0.8);transition:all .3s;display:flex;flex-direction:column;gap:10px;}
-.modal img{width:100%;height:240px;object-fit:cover;border-radius:12px;}
-.close{position:absolute;top:10px;right:10px;cursor:pointer;font-size:22px;font-weight:bold;}
-.modal.show{visibility:visible;opacity:1;transform:scale(1);}
-.modal button{padding:14px 20px;background:#25D366;color:#fff;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;transition:.3s;}
-.modal button:hover{background:#1ebe57;}
-/* ====== Formulários e Painel ====== */
-.box{background:#fff;padding:25px;border-radius:16px;max-width:500px;margin:20px auto;box-shadow:0 6px 16px rgba(0,0,0,.15);animation:fadeIn 0.8s ease forwards;opacity:0;display:flex;flex-direction:column;gap:10px;}
-input,textarea{width:100%;padding:12px;margin:5px 0;border-radius:12px;border:1px solid #ddd;font-size:15px;box-sizing:border-box;}
-#painelVendedorBtn{position:fixed;bottom:25px;right:25px;padding:16px 24px;background:#6d28d9;color:#fff;border:none;border-radius:16px;cursor:pointer;display:none;font-weight:bold;font-size:16px;box-shadow:0 6px 16px rgba(0,0,0,.2);transition:.3s;z-index: 100;}
-#painelVendedorBtn:hover{transform:scale(1.05);box-shadow:0 12px 24px rgba(0,0,0,.3);}
-footer{text-align:center;color:#777;padding:20px;font-size:14px;}
+body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;margin:0}
+.hidden{display:none}
+button{cursor:pointer}
+
+#telaInicial{
+height:100vh;display:flex;flex-direction:column;
+justify-content:center;align-items:center;
+background:linear-gradient(135deg,#2563eb,#7c3aed);
+color:#fff;text-align:center
+}
+#telaInicial button{
+padding:16px 32px;border:none;border-radius:16px;
+font-size:18px;margin:10px;background:#fff;color:#2563eb;font-weight:bold
+}
+
+.box{
+background:#fff;padding:25px;border-radius:18px;
+max-width:500px;margin:20px auto;
+box-shadow:0 10px 30px rgba(0,0,0,.15)
+}
+input,textarea{
+width:100%;padding:12px;margin:6px 0;
+border-radius:12px;border:1px solid #ddd
+}
+
+.cards{
+display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+gap:20px;margin:20px
+}
+.card{
+background:#fff;border-radius:16px;
+box-shadow:0 6px 16px rgba(0,0,0,.15);
+overflow:hidden;position:relative
+}
+.card img{width:100%;height:220px;object-fit:cover}
+.card .info{padding:14px}
+.preco{color:#16a34a;font-weight:bold}
+
+.btnDelete{
+position:absolute;top:10px;right:10px;
+background:red;color:#fff;width:30px;height:30px;
+border-radius:50%;display:flex;
+align-items:center;justify-content:center;font-weight:bold
+}
+
+#painelBtn{
+position:fixed;bottom:20px;right:20px;
+background:#7c3aed;color:#fff;
+padding:14px 20px;border-radius:18px;
+display:none;font-weight:bold;
+box-shadow:0 6px 16px rgba(0,0,0,.25)
+}
+
+.copy-btn{
+background:#2563eb;color:#fff;border:none;
+padding:6px 12px;border-radius:10px
+}
 </style>
 </head>
+
 <body>
+
 <div id="telaInicial">
-<h1>Bem-vindo à LukStore Bazar</h1>
+<h1>LukStore Bazar</h1>
 <p>Você quer ser Vendedor ou Comprador?</p>
-<button id="btnVendedor">Vendedor</button>
-<button id="btnComprador">Comprador</button>
+<button onclick="entrarVendedor()">Vendedor</button>
+<button onclick="entrarComprador()">Comprador</button>
 </div>
 
-<main class="hidden" id="mainContent">
+<main id="main" class="hidden">
+
 <section id="home" class="hidden">
-<h3 style="text-align:center;">Produtos em destaque</h3>
+<h3 style="text-align:center">Produtos</h3>
 <div class="cards" id="listaProdutos"></div>
 </section>
 
 <section id="pagamento" class="hidden">
 <div class="box">
-<h3>Seja vendedor da LukStore Bazar</h3>
-<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-<span>PIX: <b id="pixKey">dd1825ef-9839-4b1e-a525-33cd66c6507a</b></span>
-<button class="copy-btn" onclick="copyToClipboard('pixKey')">Copiar PIX</button>
-</div>
-<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-<span>Contato: <b id="phoneKey">5541997312887</b></span>
-<button class="copy-btn" onclick="copyToClipboard('phoneKey')">Copiar Nº</button>
-</div>
-<p>Envie o comprovante para aquele PIX: <b>10t REAIS</b> e para o número: <b>5541997312887</b>. Depois, insira o código recebido abaixo e seu WhatsApp.</p>
-<p>O WhatsApp que você colocar será exibido nos anúncios para que os compradores entrem em contato com você
-  e cada venda que voce fizer sera descontada por voce ser vendedor.</p>
-<input id="codigoInput" placeholder="Digite seu código">
-<input id="whatsappVendedor" placeholder="Digite seu WhatsApp">
-<input id="vNome" placeholder="Seu nome (aparece no perfil)">
-<input type="file" id="vFoto">
-<button id="btnAtivar">Ativar acesso</button>
-<p id="msg" style="color:red;font-weight:bold;"></p>
+<h3>Ativar painel vendedor</h3>
+
+<p><b>PIX:</b> dd1825ef-9839-4b1e-a525-33cd66c6507a</p>
+
+<p style="display:flex;justify-content:space-between;align-items:center">
+<span>
+Enviar comprovante para o número<br>
+<b id="numeroPix">5541997312887</b>
+</span>
+<button class="copy-btn" onclick="copiar()">Copiar</button>
+</p>
+
+<p><b>Valor:</b> R$ 10,00</p>
+
+<p style="font-size:14px">
+Após enviar o comprovante você receberá um código.<br>
+Digite o código abaixo para liberar o painel.
+</p>
+
+<input id="codigo" placeholder="Código recebido (obrigatório)">
+<input id="nomeVendedor" placeholder="Seu nome">
+<input id="whatsapp" placeholder="WhatsApp">
+<input type="file" id="foto">
+
+<button onclick="ativarPainel()">Ativar acesso</button>
+<p id="msg" style="color:red;font-weight:bold"></p>
 </div>
 </section>
 
 <section id="painel" class="hidden">
 <div class="box">
 <h3>Painel do vendedor</h3>
-<p><b>Vendedor:</b> <span id="nomeAtual">Você</span></p>
+
 <input id="pNome" placeholder="Nome do produto">
 <input id="pPreco" placeholder="Preço">
-<input type="file" id="pImgFile">
-<textarea id="pPos" placeholder="Pontos positivos"></textarea>
-<textarea id="pNeg" placeholder="Pontos negativos"></textarea>
-<button id="btnAddProduto">Publicar produto</button>
+<textarea id="pDesc" placeholder="Informações do produto"></textarea>
+<input type="file" id="pFoto">
+
+<button onclick="publicar()">Publicar produto</button>
+<button onclick="abrirMeus()">Meus anúncios</button>
 </div>
 </section>
 
-<button id="painelVendedorBtn">Fazer anúncio</button>
+<section id="meus" class="hidden">
+<div class="box">
+<h3>Meus anúncios</h3>
+<div class="cards" id="listaMeus"></div>
+<button onclick="mostrar('painel')">Voltar</button>
+</div>
+</section>
 
 </main>
 
-<div class="modal" id="modalDetalhes">
-<div class="modal-content">
-<span class="close" id="closeModal">&times;</span>
-<img id="modalImg">
-<h4 id="modalNome"></h4>
-<div><b>Preço:</b> <span id="modalPreco"></span></div>
-<div><b>Vendedor:</b> <span id="modalVendedor"></span></div>
-<div><b>Positivos:</b> <span id="modalPos"></span></div>
-<div><b>Negativos:</b> <span id="modalNeg"></span></div>
-<a id="modalWhats" href="#" target="_blank"><button>Falar no WhatsApp</button></a>
-</div>
-</div>
-
-<footer>Exemplo de LukStore Bazar • Layout moderno e funcional</footer>
+<button id="painelBtn" onclick="mostrar('painel')">Painel Vendedor</button>
 
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-const firebaseConfig = {
-  apiKey: "AIzaSyA6NR4-nA1MBIy1STy_VRvwBpMRbezOU1s",
-  authDomain: "lukstore-bazar.firebaseapp.com",
-  projectId: "lukstore-bazar",
-  storageBucket: "lukstore-bazar.firebasestorage.app",
-  messagingSenderId: "553115178908",
-  appId: "1:553115178908:web:71c3a9e5e9027e87a9da59",
-  measurementId: "G-73TQW8NH6N"
-};
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const firebaseConfig={
+apiKey:"AIzaSyA6NR4-nA1MBIy1STy_VRvwBpMRbezOU1s",
+authDomain:"lukstore-bazar.firebaseapp.com",
+projectId:"lukstore-bazar"
+}
+firebase.initializeApp(firebaseConfig)
+const db=firebase.firestore()
 
-const telaInicial = document.getElementById('telaInicial');
-const mainContent = document.getElementById('mainContent');
-const painelBtn = document.getElementById('painelVendedorBtn');
-
-document.getElementById('btnVendedor').addEventListener('click',()=>{telaInicial.classList.add('hidden'); mainContent.classList.remove('hidden'); mostrar('pagamento');});
-document.getElementById('btnComprador').addEventListener('click',()=>{telaInicial.classList.add('hidden'); mainContent.classList.remove('hidden'); mostrar('home');});
+let vendedor={}
 
 function mostrar(id){
-document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
-document.getElementById(id).classList.remove('hidden');
-if(id==='home'){carregarProdutos();}
+document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'))
+document.getElementById(id).classList.remove('hidden')
+if(id==='home') carregarProdutos()
 }
 
-document.getElementById('btnAtivar').addEventListener('click',()=>{
-const cod=document.getElementById('codigoInput').value;
-const ultimo=cod.slice(-1);
-const whatsapp=document.getElementById('whatsappVendedor').value.trim();
-const nomeV=document.getElementById('vNome').value.trim();
-const fotoFile=document.getElementById('vFoto').files[0];
-if(cod.length===6 && ['5','1','9','4'].includes(ultimo) && whatsapp && nomeV){
-    painelBtn.style.display='block';
-    painelBtn.dataset.whatsapp=whatsapp;
-    painelBtn.dataset.vNome=nomeV;
-    if(fotoFile){
-        const reader=new FileReader();
-        reader.onload=function(e){
-            painelBtn.dataset.vFoto=e.target.result;
-        };
-        reader.readAsDataURL(fotoFile);
-    }
-    mostrar('home');
-    alert('Código aceito! Painel de vendedor ativado no canto da tela');
-}else{document.getElementById('msg').innerText='Código inválido, WhatsApp ou Nome vazio';}
-});
+function entrarComprador(){
+telaInicial.classList.add('hidden')
+main.classList.remove('hidden')
+mostrar('home')
+}
 
-painelBtn.addEventListener('click',()=>{mostrar('painel');});
+function entrarVendedor(){
+telaInicial.classList.add('hidden')
+main.classList.remove('hidden')
+mostrar('pagamento')
+}
 
-const pNome=document.getElementById('pNome');
-const pPreco=document.getElementById('pPreco');
-const pPos=document.getElementById('pPos');
-const pNeg=document.getElementById('pNeg');
-const pImgFile=document.getElementById('pImgFile');
+function copiar(){
+navigator.clipboard.writeText('5541997312887')
+alert('Número copiado!')
+}
 
-document.getElementById('btnAddProduto').addEventListener('click',()=>{
-const nome=pNome.value; const preco=pPreco.value; const pos=pPos.value; const neg=pNeg.value;
-const vendedor=painelBtn.dataset.vNome || 'Vendedor';
-const whatsapp=painelBtn.dataset.whatsapp;
-const vFoto=painelBtn.dataset.vFoto || null;
-const file=pImgFile.files[0];
-if(!nome || !preco || !whatsapp){alert('Preencha nome, preço e WhatsApp!'); return;}
-const publicar=(imgData)=>{
-db.collection('produtos').add({nome,preco,pos,neg,vendedor,whatsapp,img:imgData,vFoto,dataCriacao:firebase.firestore.FieldValue.serverTimestamp()})
-.then((docRef)=>{alert('Produto publicado!'); mostrar('home'); pNome.value=''; pPreco.value=''; pPos.value=''; pNeg.value=''; pImgFile.value='';})
-.catch(err=>{alert('Erro ao publicar: '+err.message);});
-};
-if(file){const reader=new FileReader(); reader.onload=function(e){publicar(e.target.result);}; reader.readAsDataURL(file);} else publicar(null);
-});
+function ativarPainel(){
+const cod=codigo.value.trim()
+const ult=cod.slice(-1)
+if(cod.length!==6||!['1','4','5','9'].includes(ult)){
+msg.innerText='Código inválido'
+return
+}
 
-const modal=document.getElementById('modalDetalhes');
-document.getElementById('closeModal').onclick=()=>{modal.classList.remove('show');};
+vendedor={
+nome:nomeVendedor.value,
+whatsapp:whatsapp.value,
+data:Date.now()
+}
 
-function abrirModal(prod){
-document.getElementById('modalImg').style.display='none';
-if(prod.img){document.getElementById('modalImg').src=prod.img; document.getElementById('modalImg').style.display='block';}
-document.getElementById('modalNome').innerText=prod.nome;
-document.getElementById('modalPreco').innerText=prod.preco;
-document.getElementById('modalVendedor').innerText=prod.vendedor;
-document.getElementById('modalPos').innerText=prod.pos;
-document.getElementById('modalNeg').innerText=prod.neg;
-document.getElementById('modalWhats').href='https://wa.me/'+prod.whatsapp;
-modal.classList.add('show');
+localStorage.setItem('vendedor',JSON.stringify(vendedor))
+painelBtn.style.display='block'
+mostrar('home')
+}
+
+function checarLogin(){
+const v=localStorage.getItem('vendedor')
+if(!v) return
+const dados=JSON.parse(v)
+if(Date.now()-dados.data>2592000000){
+localStorage.removeItem('vendedor')
+return
+}
+vendedor=dados
+painelBtn.style.display='block'
+}
+
+function publicar(){
+db.collection('produtos').add({
+nome:pNome.value,
+preco:pPreco.value,
+desc:pDesc.value,
+vendedor:vendedor.nome,
+whatsapp:vendedor.whatsapp,
+data:firebase.firestore.FieldValue.serverTimestamp()
+}).then(()=>{
+mostrar('meus')
+abrirMeus()
+})
 }
 
 function carregarProdutos(){
-const lista=document.getElementById('listaProdutos');
-lista.innerHTML='<p style="text-align:center; padding:20px;">Carregando produtos...</p>';
-db.collection('produtos').orderBy('dataCriacao','desc').onSnapshot(snapshot=>{
-lista.innerHTML='';
-if(snapshot.empty){lista.innerHTML='<p style="text-align:center; padding:20px;">Nenhum produto anunciado ainda.</p>'; return;}
-snapshot.forEach(doc=>{
-const p=doc.data();
-const card=document.createElement('div'); card.className='card';
-let vFotoHtml=p.vFoto?`<img src="${p.vFoto}" style="width:50px;height:50px;border-radius:50%;margin-bottom:5px;">`:'';
-card.innerHTML=`${vFotoHtml}<div class='info'><h4>${p.nome}</h4><div class='preco'>R$ ${p.preco}</div><div><b>Vendedor:</b> ${p.vendedor}</div></div>`;
-card.onclick=()=>abrirModal(p);
-lista.appendChild(card);
-});
-});
+db.collection('produtos').onSnapshot(snap=>{
+listaProdutos.innerHTML=''
+snap.forEach(doc=>{
+const p=doc.data()
+const card=document.createElement('div')
+card.className='card'
+card.innerHTML=`
+<div class="info">
+<h4>${p.nome}</h4>
+<div class="preco">R$ ${p.preco}</div>
+<div>${p.vendedor}</div>
+</div>`
+listaProdutos.appendChild(card)
+})
+})
 }
 
-window.copyToClipboard=function(elementId){
-const text=document.getElementById(elementId).innerText;
-if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>alert('Copiado!')).catch(()=>fallbackCopyTextToClipboard(text));}
-else fallbackCopyTextToClipboard(text);
-};
-function fallbackCopyTextToClipboard(text){
-const textArea=document.createElement("textarea"); textArea.value=text; textArea.style.position="fixed"; textArea.style.opacity="0";
-document.body.appendChild(textArea); textArea.focus(); textArea.select();
-try{document.execCommand('copy'); alert('Copiado!');}catch(e){alert('Erro ao copiar');}
-document.body.removeChild(textArea);
+function abrirMeus(){
+mostrar('meus')
+db.collection('produtos')
+.where('whatsapp','==',vendedor.whatsapp)
+.onSnapshot(snap=>{
+listaMeus.innerHTML=''
+snap.forEach(doc=>{
+const p=doc.data()
+const card=document.createElement('div')
+card.className='card'
+card.innerHTML=`
+<div class="btnDelete">X</div>
+<div class="info">
+<h4>${p.nome}</h4>
+<div class="preco">R$ ${p.preco}</div>
+</div>`
+card.querySelector('.btnDelete').onclick=()=>{
+if(confirm('Apagar anúncio?')){
+db.collection('produtos').doc(doc.id).delete()
 }
-});
+}
+listaMeus.appendChild(card)
+})
+})
+}
+
+checarLogin()
 </script>
+
 </body>
-</html>
+  </html>
