@@ -9,7 +9,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <style>
-body{font-family:Segoe UI,sans-serif;background:#f0f2f5;margin:0;overflow-x:hidden}
+body{font-family:Segoe UI,sans-serif;background:#f0f2f5;margin:0}
 .hidden{display:none}
 button{cursor:pointer}
 
@@ -57,7 +57,7 @@ width:100%;height:200px;object-fit:cover
 position:absolute;top:10px;right:10px;
 background:red;color:#fff;width:30px;height:30px;
 border-radius:50%;display:flex;
-align-items:center;justify-content:center;font-weight:bold;cursor:pointer
+align-items:center;justify-content:center;font-weight:bold
 }
 
 .contato{
@@ -80,11 +80,6 @@ background:#7c3aed;color:#fff;
 padding:14px 20px;border-radius:18px;
 display:none;font-weight:bold;
 box-shadow:0 6px 16px rgba(0,0,0,.25)
-}
-
-#verMeusBtn{
-background:#f59e0b;color:#fff;padding:12px;
-border:none;border-radius:12px;margin-top:10px;cursor:pointer;font-weight:bold;width:100%;
 }
 </style>
 </head>
@@ -109,13 +104,13 @@ border:none;border-radius:12px;margin-top:10px;cursor:pointer;font-weight:bold;w
 <div class="box">
 <h3>Ativar painel vendedor</h3>
 <p><b>PIX:</b> dd1825ef-9839-4b1e-a525-33cd66c6507a</p>
-<p><b>Enviar comprovante para:</b> 5541997312887 <button onclick="copyPix()">Copiar</button></p>
+<p><b>Enviar comprovante para:</b> 5541997312887</p>
 <p><b>Valor:</b> R$ 10,00</p>
-<p>Após enviar o comprovante, você receberá um código de 6 dígitos.</p>
 
 <input id="codigo" placeholder="Código recebido">
 <input id="nomeVendedor" placeholder="Seu nome">
 <input id="whatsapp" placeholder="WhatsApp (DDD + número)">
+
 <button onclick="ativarPainel()">Ativar acesso</button>
 <p id="msg" style="color:red;font-weight:bold"></p>
 </div>
@@ -129,7 +124,7 @@ border:none;border-radius:12px;margin-top:10px;cursor:pointer;font-weight:bold;w
 <textarea id="pDesc" placeholder="Descrição"></textarea>
 <input type="file" id="pFoto">
 <button onclick="publicar()">Publicar produto</button>
-<button id="verMeusBtn" onclick="abrirMeus()">Ver meus produtos</button>
+<button onclick="abrirMeus()">Ver seus produtos</button>
 </div>
 </section>
 
@@ -137,7 +132,6 @@ border:none;border-radius:12px;margin-top:10px;cursor:pointer;font-weight:bold;w
 <div class="box">
 <h3>Meus anúncios</h3>
 <div class="cards" id="listaMeus"></div>
-<button onclick="abrirPainel()">Voltar</button>
 </div>
 </section>
 
@@ -159,20 +153,33 @@ projectId:"lukstore-bazar"
 firebase.initializeApp(firebaseConfig)
 const db=firebase.firestore()
 
-let vendedor = null;
+let vendedor={}
 
-// Copiar PIX
-function copyPix(){
-navigator.clipboard.writeText('5541997312887').then(()=>alert('PIX copiado!'))
-}
+// --- LOGIN AUTOMÁTICO 30 DIAS ---
+document.addEventListener('DOMContentLoaded', ()=>{
+  const vSalvo = JSON.parse(localStorage.getItem('vendedor'))
+  if(vSalvo){
+    const agora = Date.now()
+    const umMes = 30*24*60*60*1000
+    if(agora - vSalvo.data <= umMes){
+      vendedor = vSalvo
+      painelBtn.style.display='block'
+      main.classList.remove('hidden')
+      mostrar('home')
+      carregarProdutos()
+      return
+    } else {
+      localStorage.removeItem('vendedor')
+    }
+  }
+  mostrar('telaInicial')
+})
 
-// Mostrar seção
 function mostrar(id){
 document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'))
 document.getElementById(id).classList.remove('hidden')
 }
 
-// Entrar comprador
 function entrarComprador(){
 telaInicial.classList.add('hidden')
 main.classList.remove('hidden')
@@ -180,57 +187,47 @@ mostrar('home')
 carregarProdutos()
 }
 
-// Entrar vendedor
 function entrarVendedor(){
 telaInicial.classList.add('hidden')
 main.classList.remove('hidden')
 mostrar('pagamento')
 }
 
-// Ativar painel
 function ativarPainel(){
-const cod = codigo.value.trim();
-const ultimo = cod.slice(-1);
-if(cod.length!==6 || !['1','4','5','9','2'].includes(ultimo)){
-msg.innerText='Código inválido!';
-return;
+if(!codigo.value || codigo.value.length !== 6 || !['1','4','5','9','2'].includes(codigo.value.slice(-1))){
+  msg.innerText = 'Código inválido!'
+  return
 }
 if(!nomeVendedor.value || !whatsapp.value){
-msg.innerText='Preencha todos os campos!';
-return;
+  msg.innerText = 'Preencha tudo!'
+  return
 }
-vendedor = {
+vendedor={
 nome: nomeVendedor.value,
 whatsapp: whatsapp.value,
-login: Date.now()
+data: Date.now()
 }
 localStorage.setItem('vendedor', JSON.stringify(vendedor))
 painelBtn.style.display='block'
-msg.innerText=''
 mostrar('home')
 carregarProdutos()
+msg.innerText=''
 }
 
-// Abrir painel
 function abrirPainel(){
-pNome.value=''; pPreco.value=''; pDesc.value=''; pFoto.value=''
+pNome.value='';pPreco.value='';pDesc.value='';pFoto.value=''
 mostrar('painel')
 }
 
-// Publicar produto
 function publicar(){
-const file = pFoto.files[0]
-if(!pNome.value || !pPreco.value){
-alert('Preencha nome e preço'); return
-}
+const file=pFoto.files[0]
 if(file){
-const reader = new FileReader()
-reader.onload = e => salvar(e.target.result)
-reader.readAsDataURL(file)
+const r=new FileReader()
+r.onload=e=>salvar(e.target.result)
+r.readAsDataURL(file)
 }else salvar('')
 }
 
-// Salvar produto
 function salvar(img){
 db.collection('produtos').add({
 nome:pNome.value,
@@ -238,22 +235,20 @@ preco:pPreco.value,
 desc:pDesc.value,
 foto:img,
 vendedor:vendedor.nome,
-whatsapp:vendedor.whatsapp,
-data:firebase.firestore.FieldValue.serverTimestamp()
+whatsapp:vendedor.whatsapp
 }).then(()=>{
-alert('Produto publicado!')
+// após publicar, tela some
 mostrar('home')
-carregarProdutos()
+abrirMeus() // mostra os produtos do vendedor
 })
 }
 
-// Carregar todos produtos
 function carregarProdutos(){
-db.collection('produtos').orderBy('data','desc').onSnapshot(snap=>{
+db.collection('produtos').onSnapshot(snap=>{
 listaProdutos.innerHTML=''
 snap.forEach(doc=>{
 const p=doc.data()
-listaProdutos.innerHTML += `
+listaProdutos.innerHTML+=`
 <div class="card">
 ${p.foto?`<img src="${p.foto}">`:''}
 <div class="info">
@@ -268,14 +263,14 @@ ${p.foto?`<img src="${p.foto}">`:''}
 })
 }
 
-// Ver produtos de vendedor
 function verVendedor(w){
 mostrar('vendedorProdutos')
-db.collection('produtos').where('whatsapp','==',w).onSnapshot(snap=>{
+db.collection('produtos').where('whatsapp','==',w)
+.onSnapshot(snap=>{
 listaVendedor.innerHTML=''
 snap.forEach(doc=>{
 const p=doc.data()
-listaVendedor.innerHTML += `
+listaVendedor.innerHTML+=`
 <div class="card">
 ${p.foto?`<img src="${p.foto}">`:''}
 <div class="info">
@@ -288,15 +283,14 @@ ${p.foto?`<img src="${p.foto}">`:''}
 })
 }
 
-// Abrir meus produtos (apagar)
 function abrirMeus(){
-mostrar('meus')
-db.collection('produtos').where('whatsapp','==',vendedor.whatsapp)
+db.collection('produtos')
+.where('whatsapp','==',vendedor.whatsapp)
 .onSnapshot(snap=>{
 listaMeus.innerHTML=''
 snap.forEach(doc=>{
 const p=doc.data()
-listaMeus.innerHTML += `
+listaMeus.innerHTML+=`
 <div class="card">
 <div class="btnDelete" onclick="db.collection('produtos').doc('${doc.id}').delete()">X</div>
 ${p.foto?`<img src="${p.foto}">`:''}
