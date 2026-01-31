@@ -15,7 +15,7 @@ button{cursor:pointer}
 
 #telaInicial{
 height:100vh;display:flex;flex-direction:column;
-justify-cntent:center;align-items:center;
+justify-content:center;align-items:center;
 background:linear-gradient(135deg,#2563eb,#7c3aed);
 color:#fff;text-align:center
 }
@@ -308,6 +308,23 @@ ${p.foto?`<img src="${p.foto}">`:''}
 })
 })
 }
+
+// LOGIN AUTOMÁTICO - 30 DIAS
+window.addEventListener('load', () => {
+  const v = JSON.parse(localStorage.getItem('vendedor'));
+  if(v){
+    const agora = Date.now();
+    const trintaDias = 30*24*60*60*1000; // 30 dias em ms
+    if(agora - v.login < trintaDias){
+      vendedor = v;
+      painelBtn.style.display = 'block';
+      mostrar('home');
+      carregarProdutos();
+    } else {
+      localStorage.removeItem('vendedor');
+    }
+  }
+});
 </script>
 
 </body>
