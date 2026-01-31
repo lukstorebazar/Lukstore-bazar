@@ -9,22 +9,83 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <style>
-body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;margin:0;padding:0;overflow-x:hidden;}
-.hidden{display:none;}
+body{font-family:Segoe UI,sans-serif;background:#f0f2f5;margin:0;overflow-x:hidden}
+.hidden{display:none}
 button{cursor:pointer}
-#telaInicial{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;text-align:center}
-#telaInicial button{padding:16px 32px;border:none;border-radius:16px;font-size:18px;margin:10px;background:#fff;color:#2563eb;font-weight:bold}
-.box{background:#fff;padding:25px;border-radius:18px;max-width:520px;margin:20px auto;box-shadow:0 10px 30px rgba(0,0,0,.15)}
-input,textarea{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:1px solid #ddd}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;margin:20px}
-.card{background:#fff;border-radius:16px;box-shadow:0 6px 16px rgba(0,0,0,.15);overflow:hidden;position:relative}
-.card img{width:100%;height:200px;object-fit:cover}
+
+#telaInicial{
+height:100vh;display:flex;flex-direction:column;
+justify-content:center;align-items:center;
+background:linear-gradient(135deg,#2563eb,#7c3aed);
+color:#fff;text-align:center
+}
+#telaInicial button{
+padding:16px 32px;border:none;border-radius:16px;
+font-size:18px;margin:10px;background:#fff;color:#2563eb;font-weight:bold
+}
+
+.box{
+background:#fff;padding:25px;border-radius:18px;
+max-width:520px;margin:20px auto;
+box-shadow:0 10px 30px rgba(0,0,0,.15)
+}
+
+input,textarea{
+width:100%;padding:12px;margin:6px 0;
+border-radius:12px;border:1px solid #ddd
+}
+
+.cards{
+display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+gap:20px;margin:20px
+}
+
+.card{
+background:#fff;border-radius:16px;
+box-shadow:0 6px 16px rgba(0,0,0,.15);
+overflow:hidden;position:relative
+}
+
+.card img{
+width:100%;height:200px;object-fit:cover
+}
+
 .card .info{padding:14px}
 .preco{color:#16a34a;font-weight:bold}
-.btnDelete{position:absolute;top:10px;right:10px;background:red;color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;cursor:pointer}
-.contato{background:#22c55e;color:#fff;padding:10px;border-radius:12px;text-align:center;margin-top:8px;display:block;text-decoration:none;font-weight:bold}
-.verVendedor{background:#3b82f6;color:#fff;padding:8px;border-radius:12px;text-align:center;margin-top:6px;display:block;text-decoration:none;font-size:14px}
-#painelBtn{position:fixed;bottom:20px;right:20px;background:#7c3aed;color:#fff;padding:14px 20px;border-radius:18px;display:none;font-weight:bold;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+
+.btnDelete{
+position:absolute;top:10px;right:10px;
+background:red;color:#fff;width:30px;height:30px;
+border-radius:50%;display:flex;
+align-items:center;justify-content:center;font-weight:bold;cursor:pointer
+}
+
+.contato{
+background:#22c55e;color:#fff;
+padding:10px;border-radius:12px;
+text-align:center;margin-top:8px;
+display:block;text-decoration:none;font-weight:bold
+}
+
+.verVendedor{
+background:#3b82f6;color:#fff;
+padding:8px;border-radius:12px;
+text-align:center;margin-top:6px;
+display:block;text-decoration:none;font-size:14px
+}
+
+#painelBtn{
+position:fixed;bottom:20px;right:20px;
+background:#7c3aed;color:#fff;
+padding:14px 20px;border-radius:18px;
+display:none;font-weight:bold;
+box-shadow:0 6px 16px rgba(0,0,0,.25)
+}
+
+#verMeusBtn{
+background:#f59e0b;color:#fff;padding:12px;
+border:none;border-radius:12px;margin-top:10px;cursor:pointer;font-weight:bold;width:100%;
+}
 </style>
 </head>
 
@@ -48,13 +109,13 @@ input,textarea{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:1p
 <div class="box">
 <h3>Ativar painel vendedor</h3>
 <p><b>PIX:</b> dd1825ef-9839-4b1e-a525-33cd66c6507a</p>
-<p><b>Enviar comprovante para:</b> 5541997312887</p>
+<p><b>Enviar comprovante para:</b> 5541997312887 <button onclick="copyPix()">Copiar</button></p>
 <p><b>Valor:</b> R$ 10,00</p>
+<p>Após enviar o comprovante, você receberá um código de 6 dígitos.</p>
 
 <input id="codigo" placeholder="Código recebido">
 <input id="nomeVendedor" placeholder="Seu nome">
 <input id="whatsapp" placeholder="WhatsApp (DDD + número)">
-
 <button onclick="ativarPainel()">Ativar acesso</button>
 <p id="msg" style="color:red;font-weight:bold"></p>
 </div>
@@ -67,10 +128,8 @@ input,textarea{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:1p
 <input id="pPreco" placeholder="Preço">
 <textarea id="pDesc" placeholder="Descrição"></textarea>
 <input type="file" id="pFoto">
-<div style="display:flex; gap:10px;">
 <button onclick="publicar()">Publicar produto</button>
-<button onclick="abrirMeus()">Ver seus produtos</button>
-</div>
+<button id="verMeusBtn" onclick="abrirMeus()">Ver meus produtos</button>
 </div>
 </section>
 
@@ -96,17 +155,24 @@ const firebaseConfig={
 apiKey:"AIzaSyA6NR4-nA1MBIy1STy_VRvwBpMRbezOU1s",
 authDomain:"lukstore-bazar.firebaseapp.com",
 projectId:"lukstore-bazar"
-};
+}
 firebase.initializeApp(firebaseConfig)
 const db=firebase.firestore()
 
-let vendedor={};
+let vendedor = null;
 
+// Copiar PIX
+function copyPix(){
+navigator.clipboard.writeText('5541997312887').then(()=>alert('PIX copiado!'))
+}
+
+// Mostrar seção
 function mostrar(id){
 document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'))
 document.getElementById(id).classList.remove('hidden')
 }
 
+// Entrar comprador
 function entrarComprador(){
 telaInicial.classList.add('hidden')
 main.classList.remove('hidden')
@@ -114,13 +180,14 @@ mostrar('home')
 carregarProdutos()
 }
 
+// Entrar vendedor
 function entrarVendedor(){
 telaInicial.classList.add('hidden')
 main.classList.remove('hidden')
 mostrar('pagamento')
 }
 
-// Sistema de login com código válido (6 dígitos terminando com 1,4,5,9,2)
+// Ativar painel
 function ativarPainel(){
 const cod = codigo.value.trim();
 const ultimo = cod.slice(-1);
@@ -128,30 +195,42 @@ if(cod.length!==6 || !['1','4','5','9','2'].includes(ultimo)){
 msg.innerText='Código inválido!';
 return;
 }
-vendedor={nome:nomeVendedor.value, whatsapp:whatsapp.value, data:Date.now()};
-localStorage.setItem('vendedor',JSON.stringify(vendedor));
-painelBtn.style.display='block';
-mostrar('home');
-carregarProdutos();
+if(!nomeVendedor.value || !whatsapp.value){
+msg.innerText='Preencha todos os campos!';
+return;
+}
+vendedor = {
+nome: nomeVendedor.value,
+whatsapp: whatsapp.value,
+login: Date.now()
+}
+localStorage.setItem('vendedor', JSON.stringify(vendedor))
+painelBtn.style.display='block'
+msg.innerText=''
+mostrar('home')
+carregarProdutos()
 }
 
-// Abrir painel vendedor
+// Abrir painel
 function abrirPainel(){
-pNome.value='';pPreco.value='';pDesc.value='';pFoto.value='';
+pNome.value=''; pPreco.value=''; pDesc.value=''; pFoto.value=''
 mostrar('painel')
 }
 
 // Publicar produto
 function publicar(){
-const file=pFoto.files[0];
+const file = pFoto.files[0]
+if(!pNome.value || !pPreco.value){
+alert('Preencha nome e preço'); return
+}
 if(file){
-const r=new FileReader();
-r.onload=e=>salvar(e.target.result);
-r.readAsDataURL(file);
-}else salvar('');
+const reader = new FileReader()
+reader.onload = e => salvar(e.target.result)
+reader.readAsDataURL(file)
+}else salvar('')
 }
 
-// Salvar produto no Firestore
+// Salvar produto
 function salvar(img){
 db.collection('produtos').add({
 nome:pNome.value,
@@ -162,20 +241,19 @@ vendedor:vendedor.nome,
 whatsapp:vendedor.whatsapp,
 data:firebase.firestore.FieldValue.serverTimestamp()
 }).then(()=>{
-// Limpa formulário e some tela de criar produto
-pNome.value='';pPreco.value='';pDesc.value='';pFoto.value='';
-mostrar('home'); 
-abrirMeus(); // Pode clicar no botão "Ver seus produtos" depois
+alert('Produto publicado!')
+mostrar('home')
+carregarProdutos()
 })
 }
 
 // Carregar todos produtos
 function carregarProdutos(){
-db.collection('produtos').onSnapshot(snap=>{
-listaProdutos.innerHTML='';
+db.collection('produtos').orderBy('data','desc').onSnapshot(snap=>{
+listaProdutos.innerHTML=''
 snap.forEach(doc=>{
-const p=doc.data();
-listaProdutos.innerHTML+=`
+const p=doc.data()
+listaProdutos.innerHTML += `
 <div class="card">
 ${p.foto?`<img src="${p.foto}">`:''}
 <div class="info">
@@ -185,20 +263,19 @@ ${p.foto?`<img src="${p.foto}">`:''}
 <a class="verVendedor" onclick="verVendedor('${p.whatsapp}')">Ver produtos desse vendedor</a>
 <a class="contato" target="_blank" href="https://wa.me/55${p.whatsapp}">Entrar em contato</a>
 </div>
-</div>`;
+</div>`
 })
 })
 }
 
-// Ver produtos de um vendedor específico
+// Ver produtos de vendedor
 function verVendedor(w){
 mostrar('vendedorProdutos')
-db.collection('produtos').where('whatsapp','==',w)
-.onSnapshot(snap=>{
-listaVendedor.innerHTML='';
+db.collection('produtos').where('whatsapp','==',w).onSnapshot(snap=>{
+listaVendedor.innerHTML=''
 snap.forEach(doc=>{
-const p=doc.data();
-listaVendedor.innerHTML+=`
+const p=doc.data()
+listaVendedor.innerHTML += `
 <div class="card">
 ${p.foto?`<img src="${p.foto}">`:''}
 <div class="info">
@@ -206,20 +283,20 @@ ${p.foto?`<img src="${p.foto}">`:''}
 <div class="preco">R$ ${p.preco}</div>
 <a class="contato" target="_blank" href="https://wa.me/55${p.whatsapp}">Entrar em contato</a>
 </div>
-</div>`;
+</div>`
 })
 })
 }
 
-// Ver e apagar meus produtos
+// Abrir meus produtos (apagar)
 function abrirMeus(){
-mostrar('meus');
+mostrar('meus')
 db.collection('produtos').where('whatsapp','==',vendedor.whatsapp)
 .onSnapshot(snap=>{
-listaMeus.innerHTML='';
+listaMeus.innerHTML=''
 snap.forEach(doc=>{
-const p=doc.data();
-listaMeus.innerHTML+=`
+const p=doc.data()
+listaMeus.innerHTML += `
 <div class="card">
 <div class="btnDelete" onclick="db.collection('produtos').doc('${doc.id}').delete()">X</div>
 ${p.foto?`<img src="${p.foto}">`:''}
@@ -227,7 +304,7 @@ ${p.foto?`<img src="${p.foto}">`:''}
 <h4>${p.nome}</h4>
 <div class="preco">R$ ${p.preco}</div>
 </div>
-</div>`;
+</div>`
 })
 })
 }
