@@ -12,31 +12,19 @@
 body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;margin:0;padding:0;overflow-x:hidden;}
 .hidden{display:none;}
 button{cursor:pointer}
-
-/* Tela Inicial */
-#telaInicial{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;text-align:center;}
-#telaInicial button{padding:16px 32px;border:none;border-radius:16px;font-size:18px;margin:10px;background:#fff;color:#2563eb;font-weight:bold;transition:.3s;}
-#telaInicial button:hover{transform:scale(1.05);}
-
-/* Box */
-.box{background:#fff;padding:25px;border-radius:18px;max-width:520px;margin:20px auto;box-shadow:0 10px 30px rgba(0,0,0,.15);}
-input,textarea{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:1px solid #ddd;box-sizing:border-box;}
-
-/* Cards */
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;margin:20px;}
-.card{background:#fff;border-radius:16px;box-shadow:0 6px 16px rgba(0,0,0,.15);overflow:hidden;position:relative;display:flex;flex-direction:column;}
-.card img{width:100%;height:200px;object-fit:cover;}
-.card .info{padding:14px;}
-.preco{color:#16a34a;font-weight:bold;}
-
-/* Botões dentro do card */
-.btnDelete{position:absolute;top:10px;right:10px;background:red;color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;cursor:pointer;z-index:10;}
-.contato{background:#22c55e;color:#fff;padding:10px;border-radius:12px;text-align:center;margin-top:8px;display:block;text-decoration:none;font-weight:bold;}
-.verVendedor{background:#3b82f6;color:#fff;padding:8px;border-radius:12px;text-align:center;margin-top:6px;display:block;text-decoration:none;font-size:14px;text-align:center;cursor:pointer;}
-
-/* Painel Vendedor Flutuante */
-#painelBtn{position:fixed;bottom:20px;right:20px;background:#7c3aed;color:#fff;padding:14px 20px;border-radius:18px;display:none;font-weight:bold;box-shadow:0 6px 16px rgba(0,0,0,.25);cursor:pointer;transition:.3s;}
-#painelBtn:hover{transform:scale(1.05);}
+#telaInicial{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;text-align:center}
+#telaInicial button{padding:16px 32px;border:none;border-radius:16px;font-size:18px;margin:10px;background:#fff;color:#2563eb;font-weight:bold}
+.box{background:#fff;padding:25px;border-radius:18px;max-width:520px;margin:20px auto;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+input,textarea{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:1px solid #ddd}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;margin:20px}
+.card{background:#fff;border-radius:16px;box-shadow:0 6px 16px rgba(0,0,0,.15);overflow:hidden;position:relative}
+.card img{width:100%;height:200px;object-fit:cover}
+.card .info{padding:14px}
+.preco{color:#16a34a;font-weight:bold}
+.btnDelete{position:absolute;top:10px;right:10px;background:red;color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;cursor:pointer}
+.contato{background:#22c55e;color:#fff;padding:10px;border-radius:12px;text-align:center;margin-top:8px;display:block;text-decoration:none;font-weight:bold}
+.verVendedor{background:#3b82f6;color:#fff;padding:8px;border-radius:12px;text-align:center;margin-top:6px;display:block;text-decoration:none;font-size:14px}
+#painelBtn{position:fixed;bottom:20px;right:20px;background:#7c3aed;color:#fff;padding:14px 20px;border-radius:18px;display:none;font-weight:bold;box-shadow:0 6px 16px rgba(0,0,0,.25)}
 </style>
 </head>
 
@@ -51,21 +39,19 @@ input,textarea{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:1p
 
 <main id="main" class="hidden">
 
-<!-- Tela Produtos -->
 <section id="home" class="hidden">
-<h3 style="text-align:center;">Produtos</h3>
+<h3 style="text-align:center">Produtos</h3>
 <div class="cards" id="listaProdutos"></div>
 </section>
 
-<!-- Tela Ativar Vendedor -->
 <section id="pagamento" class="hidden">
 <div class="box">
 <h3>Ativar painel vendedor</h3>
-<p><b>PIX:</b> dd1825ef-9839-4b1e-a525-33cd66c6507a <button onclick="copyText('dd1825ef-9839-4b1e-a525-33cd66c6507a')">Copiar</button></p>
-<p><b>Enviar comprovante para:</b> 5541997312887 <button onclick="copyText('5541997312887')">Copiar</button></p>
+<p><b>PIX:</b> dd1825ef-9839-4b1e-a525-33cd66c6507a</p>
+<p><b>Enviar comprovante para:</b> 5541997312887</p>
 <p><b>Valor:</b> R$ 10,00</p>
 
-<input id="codigo" placeholder="Código recebido (6 dígitos)">
+<input id="codigo" placeholder="Código recebido">
 <input id="nomeVendedor" placeholder="Seu nome">
 <input id="whatsapp" placeholder="WhatsApp (DDD + número)">
 
@@ -74,7 +60,6 @@ input,textarea{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:1p
 </div>
 </section>
 
-<!-- Tela Criar Produto -->
 <section id="painel" class="hidden">
 <div class="box">
 <h3>Criar produto</h3>
@@ -82,12 +67,13 @@ input,textarea{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:1p
 <input id="pPreco" placeholder="Preço">
 <textarea id="pDesc" placeholder="Descrição"></textarea>
 <input type="file" id="pFoto">
-<button onclick="publicarProduto()">Publicar produto</button>
+<div style="display:flex; gap:10px;">
+<button onclick="publicar()">Publicar produto</button>
 <button onclick="abrirMeus()">Ver seus produtos</button>
+</div>
 </div>
 </section>
 
-<!-- Tela Meus Produtos -->
 <section id="meus" class="hidden">
 <div class="box">
 <h3>Meus anúncios</h3>
@@ -96,9 +82,8 @@ input,textarea{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:1p
 </div>
 </section>
 
-<!-- Tela Produtos de um Vendedor -->
 <section id="vendedorProdutos" class="hidden">
-<h3 style="text-align:center;">Produtos do vendedor</h3>
+<h3 style="text-align:center">Produtos do vendedor</h3>
 <div class="cards" id="listaVendedor"></div>
 </section>
 
@@ -111,13 +96,12 @@ const firebaseConfig={
 apiKey:"AIzaSyA6NR4-nA1MBIy1STy_VRvwBpMRbezOU1s",
 authDomain:"lukstore-bazar.firebaseapp.com",
 projectId:"lukstore-bazar"
-}
+};
 firebase.initializeApp(firebaseConfig)
 const db=firebase.firestore()
 
-let vendedor={}
+let vendedor={};
 
-// Funções de navegação
 function mostrar(id){
 document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'))
 document.getElementById(id).classList.remove('hidden')
@@ -136,43 +120,39 @@ main.classList.remove('hidden')
 mostrar('pagamento')
 }
 
-// Ativar painel vendedor com código válido
+// Sistema de login com código válido (6 dígitos terminando com 1,4,5,9,2)
 function ativarPainel(){
-const cod = codigo.value.trim()
-if(cod.length!==6 || !['1','4','5','9','2'].includes(cod.slice(-1))){
-document.getElementById('msg').innerText='Código inválido!'
-return
+const cod = codigo.value.trim();
+const ultimo = cod.slice(-1);
+if(cod.length!==6 || !['1','4','5','9','2'].includes(ultimo)){
+msg.innerText='Código inválido!';
+return;
 }
-vendedor={
-nome:nomeVendedor.value.trim(),
-whatsapp:whatsapp.value.trim(),
-data:Date.now()
-}
-if(!vendedor.nome || !vendedor.whatsapp){alert('Preencha todos os campos'); return;}
-localStorage.setItem('vendedor',JSON.stringify(vendedor))
-painelBtn.style.display='block'
-mostrar('home')
-carregarProdutos()
+vendedor={nome:nomeVendedor.value, whatsapp:whatsapp.value, data:Date.now()};
+localStorage.setItem('vendedor',JSON.stringify(vendedor));
+painelBtn.style.display='block';
+mostrar('home');
+carregarProdutos();
 }
 
-// Abrir Painel
+// Abrir painel vendedor
 function abrirPainel(){
-pNome.value='';pPreco.value='';pDesc.value='';pFoto.value=''
+pNome.value='';pPreco.value='';pDesc.value='';pFoto.value='';
 mostrar('painel')
 }
 
 // Publicar produto
-function publicarProduto(){
-const file=pFoto.files[0]
+function publicar(){
+const file=pFoto.files[0];
 if(file){
-const r=new FileReader()
-r.onload=e=>salvarProduto(e.target.result)
-r.readAsDataURL(file)
-}else salvarProduto('')
+const r=new FileReader();
+r.onload=e=>salvar(e.target.result);
+r.readAsDataURL(file);
+}else salvar('');
 }
 
-// Salvar produto no Firebase
-function salvarProduto(img){
+// Salvar produto no Firestore
+function salvar(img){
 db.collection('produtos').add({
 nome:pNome.value,
 preco:pPreco.value,
@@ -182,18 +162,19 @@ vendedor:vendedor.nome,
 whatsapp:vendedor.whatsapp,
 data:firebase.firestore.FieldValue.serverTimestamp()
 }).then(()=>{
-pNome.value='';pPreco.value='';pDesc.value='';pFoto.value=''
-mostrar('meus')
-abrirMeus()
+// Limpa formulário e some tela de criar produto
+pNome.value='';pPreco.value='';pDesc.value='';pFoto.value='';
+mostrar('home'); 
+abrirMeus(); // Pode clicar no botão "Ver seus produtos" depois
 })
 }
 
-// Carregar todos os produtos
+// Carregar todos produtos
 function carregarProdutos(){
-db.collection('produtos').orderBy('data','desc').onSnapshot(snap=>{
-listaProdutos.innerHTML=''
+db.collection('produtos').onSnapshot(snap=>{
+listaProdutos.innerHTML='';
 snap.forEach(doc=>{
-const p=doc.data()
+const p=doc.data();
 listaProdutos.innerHTML+=`
 <div class="card">
 ${p.foto?`<img src="${p.foto}">`:''}
@@ -204,18 +185,19 @@ ${p.foto?`<img src="${p.foto}">`:''}
 <a class="verVendedor" onclick="verVendedor('${p.whatsapp}')">Ver produtos desse vendedor</a>
 <a class="contato" target="_blank" href="https://wa.me/55${p.whatsapp}">Entrar em contato</a>
 </div>
-</div>`
+</div>`;
 })
 })
 }
 
-// Ver produtos de um vendedor
+// Ver produtos de um vendedor específico
 function verVendedor(w){
 mostrar('vendedorProdutos')
-db.collection('produtos').where('whatsapp','==',w).onSnapshot(snap=>{
-listaVendedor.innerHTML=''
+db.collection('produtos').where('whatsapp','==',w)
+.onSnapshot(snap=>{
+listaVendedor.innerHTML='';
 snap.forEach(doc=>{
-const p=doc.data()
+const p=doc.data();
 listaVendedor.innerHTML+=`
 <div class="card">
 ${p.foto?`<img src="${p.foto}">`:''}
@@ -224,40 +206,30 @@ ${p.foto?`<img src="${p.foto}">`:''}
 <div class="preco">R$ ${p.preco}</div>
 <a class="contato" target="_blank" href="https://wa.me/55${p.whatsapp}">Entrar em contato</a>
 </div>
-</div>`
+</div>`;
 })
 })
 }
 
-// Abrir meus produtos
+// Ver e apagar meus produtos
 function abrirMeus(){
-db.collection('produtos').where('whatsapp','==',vendedor.whatsapp).onSnapshot(snap=>{
-listaMeus.innerHTML=''
+mostrar('meus');
+db.collection('produtos').where('whatsapp','==',vendedor.whatsapp)
+.onSnapshot(snap=>{
+listaMeus.innerHTML='';
 snap.forEach(doc=>{
-const p=doc.data()
+const p=doc.data();
 listaMeus.innerHTML+=`
 <div class="card">
-<div class="btnDelete" onclick="apagarProduto('${doc.id}')">X</div>
+<div class="btnDelete" onclick="db.collection('produtos').doc('${doc.id}').delete()">X</div>
 ${p.foto?`<img src="${p.foto}">`:''}
 <div class="info">
 <h4>${p.nome}</h4>
 <div class="preco">R$ ${p.preco}</div>
 </div>
-</div>`
+</div>`;
 })
 })
-}
-
-// Apagar produto
-function apagarProduto(id){
-if(confirm('Deseja realmente apagar este produto?')){
-db.collection('produtos').doc(id).delete()
-}
-}
-
-// Copiar textos
-function copyText(text){
-navigator.clipboard.writeText(text).then(()=>alert('Copiado!')).catch(()=>alert('Erro ao copiar'))
 }
 </script>
 
