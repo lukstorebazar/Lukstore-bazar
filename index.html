@@ -9,6 +9,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <style>
+/* ====== Estilos Gerais ====== */
 body{font-family:Segoe UI,sans-serif;background:#f0f2f5;margin:0}
 .hidden{display:none}
 button{cursor:pointer}
@@ -46,7 +47,10 @@ box-shadow:0 6px 16px rgba(0,0,0,.15);
 overflow:hidden;position:relative
 }
 
-.card img{width:100%;height:200px;object-fit:cover}
+.card img{
+width:100%;height:200px;object-fit:cover
+}
+
 .card .info{padding:14px}
 .preco{color:#16a34a;font-weight:bold}
 
@@ -54,7 +58,8 @@ overflow:hidden;position:relative
 position:absolute;top:10px;right:10px;
 background:red;color:#fff;width:30px;height:30px;
 border-radius:50%;display:flex;
-align-items:center;justify-content:center;font-weight:bold
+align-items:center;justify-content:center;font-weight:bold;
+cursor:pointer
 }
 
 .contato{
@@ -101,12 +106,12 @@ box-shadow:0 6px 16px rgba(0,0,0,.25)
 <div class="box">
 <h3>Ativar painel vendedor</h3>
 <p><b>PIX:</b> dd1825ef-9839-4b1e-a525-33cd66c6507a</p>
-<p><b>Enviar comprovante para:</b> 5541997312887</p>
+<p><b>Enviar comprovante para:</b> 5541997312887 <button onclick="copiar('5541997312887')">Copiar</button></p>
 <p><b>Valor:</b> R$ 10,00</p>
 
-<input id="codigo" placeholder="Código recebido (6 dígitos)">
+<input id="codigo" placeholder="Código recebido">
 <input id="nomeVendedor" placeholder="Seu nome">
-<input id="whatsapp" placeholder="WhatsApp">
+<input id="whatsapp" placeholder="WhatsApp (DDD + número)">
 
 <button onclick="ativarPainel()">Ativar acesso</button>
 <p id="msg" style="color:red;font-weight:bold"></p>
@@ -121,6 +126,7 @@ box-shadow:0 6px 16px rgba(0,0,0,.25)
 <textarea id="pDesc" placeholder="Descrição"></textarea>
 <input type="file" id="pFoto">
 <button onclick="publicar()">Publicar produto</button>
+<button onclick="abrirMeus()">Ver seu produto</button>
 </div>
 </section>
 
@@ -149,21 +155,16 @@ projectId:"lukstore-bazar"
 firebase.initializeApp(firebaseConfig)
 const db=firebase.firestore()
 
-let vendedor=null
+let vendedor={}
 
 function mostrar(id){
 document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'))
 document.getElementById(id).classList.remove('hidden')
 }
 
-function codigoValido(c){
-return c.length===6 && ['1','2','4','5','9'].includes(c.slice(-1))
-}
-
 function entrarComprador(){
 telaInicial.classList.add('hidden')
 main.classList.remove('hidden')
-painelBtn.style.display='none'
 mostrar('home')
 carregarProdutos()
 }
@@ -171,45 +172,46 @@ carregarProdutos()
 function entrarVendedor(){
 telaInicial.classList.add('hidden')
 main.classList.remove('hidden')
-if(vendedor){
-painelBtn.style.display='block'
-mostrar('home')
-carregarProdutos()
-}else{
 mostrar('pagamento')
 }
-}
 
+// Função para copiar número
+function copiar(num){navigator.clipboard.writeText(num).then(()=>alert('Número copiado!'))}
+
+// Ativar painel com verificação de código
 function ativarPainel(){
-if(!codigoValido(codigo.value)){
-msg.innerText="Código inválido"
-return
+let cod = codigo.value.trim();
+if(cod.length!==6 || !['1','2','4','5','9'].includes(cod.slice(-1))){
+    msg.innerText='Código inválido! Terminar com 1,2,4,5,9 e ter 6 dígitos.';
+    return;
 }
 vendedor={
 nome:nomeVendedor.value,
 whatsapp:whatsapp.value,
-expira:Date.now()+30*24*60*60*1000
+data:Date.now()
 }
-localStorage.setItem('vendedor',JSON.stringify(vendedor))
 painelBtn.style.display='block'
 mostrar('home')
 carregarProdutos()
 }
 
+// Abrir painel vendedor (limpa tela de criar produto)
 function abrirPainel(){
-pNome.value='';pPreco.value='';pDesc.value='';pFoto.value=''
+pNome.value='';pPreco.value='';pDesc.value='';pFoto.value='';
 mostrar('painel')
 }
 
+// Publicar produto
 function publicar(){
-const f=pFoto.files[0]
-if(f){
+const file=pFoto.files[0]
+if(file){
 const r=new FileReader()
 r.onload=e=>salvar(e.target.result)
-r.readAsDataURL(f)
+r.readAsDataURL(file)
 }else salvar('')
 }
 
+// Salvar produto no Firebase
 function salvar(img){
 db.collection('produtos').add({
 nome:pNome.value,
@@ -219,11 +221,14 @@ foto:img,
 vendedor:vendedor.nome,
 whatsapp:vendedor.whatsapp
 }).then(()=>{
-mostrar('meus')
-abrirMeus()
+alert('Produto publicado!')
+// Após publicar, tela some e só volta ao clicar Painel Vendedor
+mostrar('home')
+pNome.value='';pPreco.value='';pDesc.value='';pFoto.value=''
 })
 }
 
+// Carregar produtos para todos verem
 function carregarProdutos(){
 db.collection('produtos').onSnapshot(snap=>{
 listaProdutos.innerHTML=''
@@ -244,6 +249,7 @@ ${p.foto?`<img src="${p.foto}">`:''}
 })
 }
 
+// Ver produtos de um vendedor específico
 function verVendedor(w){
 mostrar('vendedorProdutos')
 db.collection('produtos').where('whatsapp','==',w)
@@ -264,7 +270,10 @@ ${p.foto?`<img src="${p.foto}">`:''}
 })
 }
 
+// Abrir meus produtos (para apagar)
 function abrirMeus(){
+if(!vendedor || !vendedor.whatsapp){ alert('Faça login como vendedor primeiro!'); return; }
+mostrar('meus')
 db.collection('produtos')
 .where('whatsapp','==',vendedor.whatsapp)
 .onSnapshot(snap=>{
@@ -282,13 +291,6 @@ ${p.foto?`<img src="${p.foto}">`:''}
 </div>`
 })
 })
-}
-
-const salvo=localStorage.getItem('vendedor')
-if(salvo){
-const v=JSON.parse(salvo)
-if(Date.now()<v.expira) vendedor=v
-else localStorage.removeItem('vendedor')
 }
 </script>
 
